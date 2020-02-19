@@ -14,15 +14,18 @@ import (
 var addr = flag.String("listen-address", ":9100", "The address to listen on for HTTP requests.")
 
 func main() {
-	log.WithFields(log.Fields{
-		"animal": "walrus",
-	}).Info("A walrus appears")
-
-	go allocateMemory()
 
 	flag.Parse()
 	http.Handle("/metrics", promhttp.Handler())
+	http.HandleFunc("/dobusiness", businessHandler)
 	log.Fatal(http.ListenAndServe(*addr, nil))
+}
+
+func businessHandler(w http.ResponseWriter, r *http.Request) {
+	log.WithFields(log.Fields{
+		"animal": "walrus",
+	}).Info("A walrus appears")
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
 func allocateMemory() {
