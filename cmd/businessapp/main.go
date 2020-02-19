@@ -1,31 +1,51 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	"log/syslog"
 	"net/http"
 	"time"
 	"unsafe"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
+	lSyslog "github.com/sirupsen/logrus/hooks/syslog"
 )
-
-var addr = flag.String("listen-address", ":9100", "The address to listen on for HTTP requests.")
 
 func main() {
 
-	flag.Parse()
-	http.Handle("/metrics", promhttp.Handler())
-	http.HandleFunc("/dobusiness", businessHandler)
-	log.Fatal(http.ListenAndServe(*addr, nil))
+	log := logrus.New()
+	//hook, err := lSyslog.NewSyslogHook("tcp", "localhost:8086", syslog.LOG_INFO, "")
+	hook, err := lSyslog.NewSyslogHook("tcp", "localhost:8086", syslog.LOG_INFO, "")
+
+	if err == nil {
+		log.Hooks.Add(hook)
+	}
+
+	finish := make(chan bool)
+
+	server9100 := http.NewServeMux()
+	server9100.Handle("/metrics", promhttp.Handler())
+
+	server8081 := http.NewServeMux()
+	server8081.Handle("/", businessHandler(log))
+
+	go func() {
+		http.ListenAndServe(":9100", server9100)
+	}()
+
+	go func() {
+		http.ListenAndServe(":8081", server8081)
+	}()
+
+	<-finish
 }
 
-func businessHandler(w http.ResponseWriter, r *http.Request) {
-	log.WithFields(log.Fields{
-		"animal": "walrus",
-	}).Info("A walrus appears")
-	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+func businessHandler(log *logrus.Logger) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Infof("got some business to do", "yeah")
+		fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	})
 }
 
 func allocateMemory() {
