@@ -42,9 +42,14 @@ func main() {
 
 func businessHandler(log *logrus.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//go logAsync("got some business to do %s", "yeah", log)
 		log.Infof("got some business to do %s", "yeah")
 		fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 	})
+}
+
+func logAsync(message, arg string, log *logrus.Logger) {
+	log.Infof(message, arg)
 }
 
 func allocateMemory() {

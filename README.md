@@ -7,10 +7,10 @@
 * prometheus, started with systemd
 * grafana, started with systmed
 * logstash, started manually `/usr/bin/logstash -f /etc/logstash/logstash.conf`
-
-all tools installed with pacman
+* k6 for performancetest
 
 ## start go apps
+* 
 
 # logstash 
 
@@ -27,3 +27,8 @@ all tools installed with pacman
 ## logstash backpressure
 * https://www.elastic.co/guide/en/logstash/current/persistent-queues.html#backpressure-persistent-queue
 * https://discuss.elastic.co/t/how-does-input-tcp-plugin-handle-queue-being-full/106222
+
+# k6
+
+## execute performancetest
+`k6 run --stage 2m:150 perf.js`
