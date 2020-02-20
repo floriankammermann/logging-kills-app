@@ -15,7 +15,6 @@ import (
 func main() {
 
 	log := logrus.New()
-	//hook, err := lSyslog.NewSyslogHook("tcp", "localhost:8086", syslog.LOG_INFO, "")
 	hook, err := lSyslog.NewSyslogHook("tcp", "localhost:8086", syslog.LOG_INFO, "")
 
 	if err == nil {
@@ -43,7 +42,7 @@ func main() {
 
 func businessHandler(log *logrus.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		log.Infof("got some business to do", "yeah")
+		log.Infof("got some business to do %s", "yeah")
 		fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 	})
 }

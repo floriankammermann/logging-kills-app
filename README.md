@@ -12,6 +12,8 @@ all tools installed with pacman
 
 ## start go apps
 
+# logstash 
+
 ## generate 2000 events in logstash queue
 * `for i in {1..2000}; do curl -X PUT http://localhost:8080 -d '{"bla":"blo"}'; echo " $i"; done`
 
@@ -21,3 +23,7 @@ all tools installed with pacman
 ## logstash get node stats
 * `curl -XGET 'localhost:9600/_node/stats/pipelines/?pretty'`
 * prometheus converter: https://github.com/alxrem/prometheus-logstash-exporter, start: `/usr/local/bin/logstash-exporter`, query: http://localhost:9198/metrics
+
+## logstash backpressure
+* https://www.elastic.co/guide/en/logstash/current/persistent-queues.html#backpressure-persistent-queue
+* https://discuss.elastic.co/t/how-does-input-tcp-plugin-handle-queue-being-full/106222
