@@ -31,4 +31,4 @@
 # k6
 
 ## execute performancetest
-`k6 run --stage 2m:150 perf.js`
+`k6 run --stage 15s:50 perf.js`

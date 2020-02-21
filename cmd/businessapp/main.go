@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log/syslog"
 	"net/http"
-	"time"
-	"unsafe"
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
@@ -15,7 +13,7 @@ import (
 func main() {
 
 	log := logrus.New()
-	hook, err := lSyslog.NewSyslogHook("tcp", "localhost:8086", syslog.LOG_INFO, "")
+	hook, err := lSyslog.NewSyslogHook("tcp", "127.0.0.1:8086", syslog.LOG_INFO, "")
 
 	if err == nil {
 		log.Hooks.Add(hook)
@@ -42,7 +40,7 @@ func main() {
 
 func businessHandler(log *logrus.Logger) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//go logAsync("got some business to do %s", "yeah", log)
+		// go logAsync("got some business to do %s", "yeah", log)
 		log.Infof("got some business to do %s", "yeah")
 		fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 	})
@@ -50,16 +48,4 @@ func businessHandler(log *logrus.Logger) http.Handler {
 
 func logAsync(message, arg string, log *logrus.Logger) {
 	log.Infof(message, arg)
-}
-
-func allocateMemory() {
-
-	var buffer [100 * 1024 * 1024]string
-	fmt.Printf("The size of the buffer is: %d bytes\n", unsafe.Sizeof(buffer))
-
-	for e, _ := range buffer {
-		time.Sleep(100 * time.Nanosecond)
-		buffer[e] = "string"
-	}
-
 }
