@@ -9,9 +9,6 @@
 * logstash, started manually `/usr/bin/logstash -f /etc/logstash/logstash.conf`
 * k6 for performancetest
 
-## start go apps
-* 
-
 # logstash 
 
 ## generate 2000 events in logstash queue
@@ -27,6 +24,9 @@
 ## logstash backpressure
 * https://www.elastic.co/guide/en/logstash/current/persistent-queues.html#backpressure-persistent-queue
 * https://discuss.elastic.co/t/how-does-input-tcp-plugin-handle-queue-being-full/106222
+
+## monitor logstash queue
+* `while true; do sleep 2; clear; curl -m 2 -XGET 'localhost:9600/_node/stats/pipelines' -s | jq .pipelines.main.queue; done`
 
 # k6
 
